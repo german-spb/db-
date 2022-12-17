@@ -50,9 +50,9 @@ left join genres g2 on g2.id = g.genres_id
 group by album_name, p.performer_id 
 having count(p.performer_id ) > 1;
 -- наименование треков, которые не входят в сборники
-select track_name, t.id, t2.track_id  from track t 
+select track_name from track t 
 left join trackdigest t2 on t2.track_id = t.id 
-where track_id = null; 
+where t2.digest_id is null; 
 -- исполнитель с самым коротким треком
 select pseudonym from performer p 
 left join performeralbum p2 on p2.performer_id = p.id 
@@ -61,9 +61,12 @@ left join track t on t.album_id = a.id
 where duration = (select min (duration) from track t2);
 -- название альбомов, содержащих наименьшее количество треков
 select a.album_name, count(t.track_name) from album a
-left join track t on t.album_id = a.id 
+inner join track t on t.album_id = a.id 
 group by album_name 
-having count(t.track_name) = 1;    
+having count(t.track_name) = (select count(t.track_name) as c from album a inner join track t 
+on t.album_id = a.id 
+group by album_name
+order by c limit 1);    
 
 
 
