@@ -27,11 +27,11 @@ select album_id, AVG(duration) from track t
 group by album_id 
 order by avg(duration) desc; 
 -- все исполнители, которые не выпустили альбом в 2020 году
-select p2.pseudonym from performeralbum p  
+select distinct p2.pseudonym from performeralbum p  
 left join performer p2 on p2.id = p.performer_id
 left join album a on a.id = p.album_id 
-where year = 2013
-group by p2.pseudonym;
+where year != 2020
+order by p2.pseudonym;
 -- название сбрника, в которых присутствует исполнитель "Ария"
 select digest_name  from digest d2  
 left join trackdigest t2 on t2.digest_id = d2.id 
@@ -40,7 +40,7 @@ left join album a on a.id = t.album_id
 left join performeralbum p on p.album_id = a.id 
 left join performer p2 on p2.id = p.performer_id 
 where pseudonym = 'Ария'
-group by digest_name;
+order by digest_name;
 -- название альбомов, в которых присутствуют исполнители более 1 жанра
 select album_name, count(p.performer_id)  from album a2  
 left join performeralbum p on p.album_id  = a2.id
